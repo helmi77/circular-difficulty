@@ -5,45 +5,61 @@ class GameScene extends Phaser.Scene
 		super({
 			key: 'Game',
 		});
-		this.bubbles = [];
+		this.config = {
+			'playerSpeed': 125,
+		};
 	}
 
 	preload()
 	{
 	    this.load.image('bubble', 'assets/bubble.png');
+	    this.load.image('player', 'assets/player.png');
 	}
 	
-	create() 
+	create()
 	{
-		console.log(this);
+		this.keys = this.input.keyboard.addKeys({
+			'left': 65,
+			'right': 68,
+		});
 
-	    let bubble = this.physics.add.sprite(0, 600, 'bubble');
-	    bubble.setOrigin(0, 1);
-	    //bubble.body.collideWorldBounds = true;
+		this.bubbles = this.physics.add.group({
+			key: 'bubble',
+			repeat: 2,
+			setXY: {
+				x: 110,
+				y: 100,
+				stepX: 45*4,
+				stepY: 0
+			}
+		});
+		this.bubbles.children.iterate(function (child) {
+		    child.setCollideWorldBounds(true);
+		    child.setGravityY(800);
+		    child.setBounce(1);
+		    child.setVelocityX(100);
+		});
 
-	    this.tweens.add({
-	        targets: bubble,
-	        x: 800,
-	        duration: 6000,
-	        ease: 'Linear',
-	        yoyo: true,
-	        loop: -1
-	    });
-	    this.tweens.add({
-	        targets: bubble,
-	        y: 300,
-	        duration: 750,
-	        ease: 'Sine.easeOut',
-	        yoyo: true,
-	        loop: -1
-	    });
+		this.player = this.physics.add.sprite(400, 580, 'player');
+		this.player.setCollideWorldBounds(true);
+		this.player.setGravityY(800);
 	}
 
 	update()
 	{
-		/*this.physics.overlap(this.bubbles[0], this.bubbles[1], function () {
-			
-		});*/
+		if (this.keys.left.isDown)
+		{
+			this.player.setVelocityX(-1 * this.config.playerSpeed);
+		}
+		else if (this.keys.right.isDown)
+		{
+			this.player.setVelocityX(this.config.playerSpeed);
+		}
+		else
+		{
+			this.player.setVelocityX(0);
+		}
+		/*this.physics.overlap(this.bubbles[0], this.bubbles[1], function () {});*/
 	}
 }
 
