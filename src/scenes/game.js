@@ -13,6 +13,7 @@ class GameScene extends Phaser.Scene
 
 	preload()
 	{
+	    this.load.image('bullet', 'assets/bullet.png');
 	    this.load.image('bubble', 'assets/bubble.png');
 	    this.load.image('player', 'assets/player.png');
 	}
@@ -22,6 +23,7 @@ class GameScene extends Phaser.Scene
 		this.keys = this.input.keyboard.addKeys({
 			'left': 65,
 			'right': 68,
+			'shoot': 87,
 		});
 
 		this.bubbles = this.physics.add.group({
@@ -38,8 +40,11 @@ class GameScene extends Phaser.Scene
 		    child.setCollideWorldBounds(true);
 		    child.setGravityY(800);
 		    child.setBounce(1);
-		    child.setVelocityX(100);
-		    child.setDrag(0, -5);
+		    child.setVelocityX(110);
+		    child.setAngularDrag(0);
+		    child.setDrag(0, -5.8);
+		    child.setFriction(0, 0);
+		    child.setMass(0);
 		});
 
 		this.player = this.physics.add.sprite(400, 580, 'player');
@@ -49,27 +54,34 @@ class GameScene extends Phaser.Scene
 
 	update()
 	{
-		console.log(this.bubbles);
-		this.bubbles.children.iterate(function (child, idx) {
-			if (typeof this.bubbleHeight[idx] === 'undefined' || child.y - 5 < this.bubbleHeight[idx]) {
-				this.bubbleHeight[idx] = child.y;
-			}
-		}, this)
+		if (Phaser.Input.Keyboard.JustDown(this.keys.shoot)) {
+			shoot.call(this);
+			this.physics.add.overlap(this.bullet, this.bubbles, function (bullet, bubble) {
+				bubble.destroy();
+			});
+		}
 
-		if (this.keys.left.isDown)
-		{
+		if (this.keys.left.isDown) {
 			this.player.setVelocityX(-1 * this.config.playerSpeed);
-		}
-		else if (this.keys.right.isDown)
-		{
+		} else if (this.keys.right.isDown) {
 			this.player.setVelocityX(this.config.playerSpeed);
-		}
-		else
-		{
+		} else {
 			this.player.setVelocityX(0);
-		}
-		/*this.physics.overlap(this.bubbles[0], this.bubbles[1], function () {});*/
+		}		
 	}
+}
+
+function shoot() {
+	let bullet = this.bullet = this.physics.add.sprite(this.player.x, 600, 'bullet');
+	this.tweens.add({
+		targets: this.bullet,
+		scaleY: 600,
+		duration: 2000,
+		ease: 'Linear',
+		onComplete: function () {
+			bullet.destroy();
+		}
+	});
 }
 
 export default GameScene;
