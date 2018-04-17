@@ -5,6 +5,7 @@ class GameScene extends Phaser.Scene
 		super({
 			key: 'Game',
 		});
+		this.bubbleHeight = [];
 		this.config = {
 			'playerSpeed': 125,
 		};
@@ -38,6 +39,7 @@ class GameScene extends Phaser.Scene
 		    child.setGravityY(800);
 		    child.setBounce(1);
 		    child.setVelocityX(100);
+		    child.setDrag(0, -5);
 		});
 
 		this.player = this.physics.add.sprite(400, 580, 'player');
@@ -47,6 +49,13 @@ class GameScene extends Phaser.Scene
 
 	update()
 	{
+		console.log(this.bubbles);
+		this.bubbles.children.iterate(function (child, idx) {
+			if (typeof this.bubbleHeight[idx] === 'undefined' || child.y - 5 < this.bubbleHeight[idx]) {
+				this.bubbleHeight[idx] = child.y;
+			}
+		}, this)
+
 		if (this.keys.left.isDown)
 		{
 			this.player.setVelocityX(-1 * this.config.playerSpeed);
