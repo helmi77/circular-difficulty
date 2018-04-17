@@ -1,8 +1,6 @@
 import 'phaser';
 import GameScene from './scenes/game';
 
-let scene = new Phaser.Scene('Game');
-
 let config = {
     backgroundColor: '#f0f8ff',
     type: Phaser.AUTO,

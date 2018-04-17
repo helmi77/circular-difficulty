@@ -7,8 +7,13 @@ class GameScene extends Phaser.Scene
 		});
 		this.bubbleHeight = [];
 		this.config = {
-			'playerSpeed': 125,
+			playerSpeed: 125,
 		};
+
+		let that = this;
+		window.addEventListener('deviceorientation', function (e) {
+			that.handleOrientation(e);
+		});
 	}
 
 	preload()
@@ -20,6 +25,9 @@ class GameScene extends Phaser.Scene
 	
 	create()
 	{
+		let height = this.sys.game.config.height;
+		let width = this.sys.game.config.width;
+
 		this.keys = this.input.keyboard.addKeys({
 			'left': 65,
 			'right': 68,
@@ -30,12 +38,13 @@ class GameScene extends Phaser.Scene
 			key: 'bubble',
 			repeat: 2,
 			setXY: {
-				x: 110,
+				x: 100,
 				y: 100,
 				stepX: 45*4,
 				stepY: 0
 			}
 		});
+		console.log(this);
 		this.bubbles.children.iterate(function (child) {
 		    child.setCollideWorldBounds(true);
 		    child.setGravityY(800);
@@ -47,7 +56,7 @@ class GameScene extends Phaser.Scene
 		    child.setMass(0);
 		});
 
-		this.player = this.physics.add.sprite(400, 580, 'player');
+		this.player = this.physics.add.sprite(width / 2, height - 50, 'player');
 		this.player.setCollideWorldBounds(true);
 		this.player.setGravityY(800);
 	}
@@ -67,17 +76,28 @@ class GameScene extends Phaser.Scene
 			this.player.setVelocityX(this.config.playerSpeed);
 		} else {
 			this.player.setVelocityX(0);
-		}		
+		}
+	}
+	
+	handleOrientation(e) 
+	{
+		if (typeof e === 'undefined') return
+		if (e.gamma < 0)
+			this.player.setVelocityX(this.config.playerSpeed);
+		else if (e.gamma > 0)
+			this.player.setVelocityX(-1 * this.config.playerSpeed);
 	}
 }
 
+
 function shoot() {
 	let that = this;
-	let bullet = this.bullet = this.physics.add.sprite(this.player.x, 600, 'bullet');
+	let height = this.sys.game.config.height;
+	let bullet = this.bullet = this.physics.add.sprite(this.player.x, height, 'bullet');
 	this.shooting = true;
 	this.tweens.add({
 		targets: this.bullet,
-		scaleY: 600,
+		scaleY: height,
 		duration: 2000,
 		ease: 'Linear',
 		onComplete: function () {
@@ -86,5 +106,6 @@ function shoot() {
 		}
 	});
 }
+
 
 export default GameScene;
