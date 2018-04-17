@@ -9,11 +9,6 @@ class GameScene extends Phaser.Scene
 		this.config = {
 			playerSpeed: 125,
 		};
-
-		let that = this;
-		window.addEventListener('deviceorientation', function (e) {
-			that.handleOrientation(e);
-		});
 	}
 
 	preload()
@@ -44,7 +39,6 @@ class GameScene extends Phaser.Scene
 				stepY: 0
 			}
 		});
-		console.log(this);
 		this.bubbles.children.iterate(function (child) {
 		    child.setCollideWorldBounds(true);
 		    child.setGravityY(800);
@@ -65,27 +59,25 @@ class GameScene extends Phaser.Scene
 	{
 		if (!this.shooting && Phaser.Input.Keyboard.JustDown(this.keys.shoot)) {
 			shoot.call(this);
-			this.physics.add.overlap(this.bullet, this.bubbles, function (bullet, bubble) {
-				bubble.destroy();
-			});
+			this.physics.add.overlap(this.bullet, this.bubbles, this.bubbleHit.bind(this));
 		}
 
-		if (this.keys.left.isDown) {
+		if (this.keys.left.isDown || this.tilt < 0) {
 			this.player.setVelocityX(-1 * this.config.playerSpeed);
-		} else if (this.keys.right.isDown) {
+		} else if (this.keys.right.isDown || this.tilt > 0) {
 			this.player.setVelocityX(this.config.playerSpeed);
 		} else {
 			this.player.setVelocityX(0);
 		}
 	}
-	
-	handleOrientation(e) 
+
+	bubbleHit(bullet, bubble)
 	{
-		if (typeof e === 'undefined') return
-		if (e.gamma < 0)
-			this.player.setVelocityX(this.config.playerSpeed);
-		else if (e.gamma > 0)
-			this.player.setVelocityX(-1 * this.config.playerSpeed);
+		bullet.destroy();
+		this.shooting = false;
+		if (typeof this.bulletTween !== 'undefined') {
+			this.bulletTween.stop();
+		}
 	}
 }
 
@@ -95,7 +87,7 @@ function shoot() {
 	let height = this.sys.game.config.height;
 	let bullet = this.bullet = this.physics.add.sprite(this.player.x, height, 'bullet');
 	this.shooting = true;
-	this.tweens.add({
+	this.bulletTween = this.tweens.add({
 		targets: this.bullet,
 		scaleY: height,
 		duration: 2000,
