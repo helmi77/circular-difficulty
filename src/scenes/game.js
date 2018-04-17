@@ -54,7 +54,7 @@ class GameScene extends Phaser.Scene
 
 	update()
 	{
-		if (Phaser.Input.Keyboard.JustDown(this.keys.shoot)) {
+		if (!this.shooting && Phaser.Input.Keyboard.JustDown(this.keys.shoot)) {
 			shoot.call(this);
 			this.physics.add.overlap(this.bullet, this.bubbles, function (bullet, bubble) {
 				bubble.destroy();
@@ -72,7 +72,9 @@ class GameScene extends Phaser.Scene
 }
 
 function shoot() {
+	let that = this;
 	let bullet = this.bullet = this.physics.add.sprite(this.player.x, 600, 'bullet');
+	this.shooting = true;
 	this.tweens.add({
 		targets: this.bullet,
 		scaleY: 600,
@@ -80,6 +82,7 @@ function shoot() {
 		ease: 'Linear',
 		onComplete: function () {
 			bullet.destroy();
+			that.shooting = false;
 		}
 	});
 }
