@@ -62,9 +62,9 @@ class GameScene extends Phaser.Scene
 			this.physics.add.overlap(this.bullet, this.bubbles, this.bubbleHit.bind(this));
 		}
 
-		if (this.keys.left.isDown || this.tilt < 0) {
+		if (this.keys.left.isDown) {
 			this.player.setVelocityX(-1 * this.config.playerSpeed);
-		} else if (this.keys.right.isDown || this.tilt > 0) {
+		} else if (this.keys.right.isDown) {
 			this.player.setVelocityX(this.config.playerSpeed);
 		} else {
 			this.player.setVelocityX(0);
@@ -73,11 +73,48 @@ class GameScene extends Phaser.Scene
 
 	bubbleHit(bullet, bubble)
 	{
+	    bubble.destroy();
 		bullet.destroy();
 		this.shooting = false;
 		if (typeof this.bulletTween !== 'undefined') {
 			this.bulletTween.stop();
 		}
+
+		if (bubble.depth >= 2) 
+			return;
+
+		let leftBubble = this.bubbles.create(bubble.x, bubble.y, 'bubble');
+		let rightBubble = this.bubbles.create(bubble.x, bubble.y, 'bubble');
+		leftBubble.depth = rightBubble.depth = bubble.depth + 1 || 0;
+
+		/*this.tweens.add({
+			targets: this.bullet,
+			scaleY: height,
+			duration: 2000,
+			ease: 'Linear',
+			onComplete: function () {
+				bullet.destroy();
+				that.shooting = false;
+			}
+		});*/
+
+	    leftBubble.setCollideWorldBounds(true);
+	    leftBubble.setGravityY(800);
+	    leftBubble.setBounce(1);
+	    leftBubble.setVelocityX(-110);
+	    leftBubble.setAngularDrag(0);
+	    leftBubble.setDrag(0, -5.8);
+	    leftBubble.setFriction(0, 0);
+	    leftBubble.setMass(0);
+
+	    rightBubble.setCollideWorldBounds(true);
+	    rightBubble.setGravityY(800);
+	    rightBubble.setBounce(1);
+	    rightBubble.setVelocityX(110);
+	    rightBubble.setAngularDrag(0);
+	    rightBubble.setDrag(0, -5.8);
+	    rightBubble.setFriction(0, 0);
+	    rightBubble.setMass(0);
 	}
 }
 
