@@ -5,7 +5,6 @@ class GameScene extends Phaser.Scene
 		super({
 			key: 'Game',
 		});
-		this.bubbleHeight = [];
 		this.config = {
 			playerSpeed: 125,
 		};
@@ -48,6 +47,7 @@ class GameScene extends Phaser.Scene
 		    child.setDrag(0, -5.8);
 		    child.setFriction(0, 0);
 		    child.setMass(0);
+		    child.maxY = 100;
 		});
 
 		this.player = this.physics.add.sprite(width / 2, height - 50, 'player');
@@ -86,35 +86,26 @@ class GameScene extends Phaser.Scene
 		let leftBubble = this.bubbles.create(bubble.x, bubble.y, 'bubble');
 		let rightBubble = this.bubbles.create(bubble.x, bubble.y, 'bubble');
 		leftBubble.depth = rightBubble.depth = bubble.depth + 1 || 0;
-
-		/*this.tweens.add({
-			targets: this.bullet,
-			scaleY: height,
-			duration: 2000,
-			ease: 'Linear',
-			onComplete: function () {
-				bullet.destroy();
-				that.shooting = false;
-			}
-		});*/
-
-	    leftBubble.setCollideWorldBounds(true);
-	    leftBubble.setGravityY(800);
-	    leftBubble.setBounce(1);
+		leftBubble.maxY = rightBubble.maxY = bubble.maxY + 100;
+		
 	    leftBubble.setVelocityX(-110);
-	    leftBubble.setAngularDrag(0);
-	    leftBubble.setDrag(0, -5.8);
-	    leftBubble.setFriction(0, 0);
-	    leftBubble.setMass(0);
+	    leftBubble.setCollideWorldBounds(true);
+	    leftBubble.setBounce(1);
 
-	    rightBubble.setCollideWorldBounds(true);
-	    rightBubble.setGravityY(800);
-	    rightBubble.setBounce(1);
 	    rightBubble.setVelocityX(110);
-	    rightBubble.setAngularDrag(0);
-	    rightBubble.setDrag(0, -5.8);
-	    rightBubble.setFriction(0, 0);
-	    rightBubble.setMass(0);
+	    rightBubble.setCollideWorldBounds(true);
+	    rightBubble.setBounce(1);
+
+		this.tweens.add({
+			targets: [ leftBubble, rightBubble ],
+			y: leftBubble.y - 150,
+			duration: 700,
+			ease: 'Sine.easeOut',
+			onComplete: function () {
+			    leftBubble.setGravityY(800);
+			    rightBubble.setGravityY(800);
+			}
+		});
 	}
 }
 
