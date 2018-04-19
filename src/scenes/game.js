@@ -18,7 +18,7 @@ class GameScene extends Phaser.Scene
 	}
 	
 	create()
-	{
+	{		
 		let height = this.sys.game.config.height;
 		let width = this.sys.game.config.width;
 
@@ -87,7 +87,7 @@ class GameScene extends Phaser.Scene
 		let rightBubble = this.bubbles.create(bubble.x, bubble.y, 'bubble');
 		leftBubble.depth = rightBubble.depth = bubble.depth + 1 || 0;
 		leftBubble.maxY = rightBubble.maxY = bubble.maxY + 100;
-		
+
 	    leftBubble.setVelocityX(-110);
 	    leftBubble.setCollideWorldBounds(true);
 	    leftBubble.setBounce(1);
@@ -102,8 +102,10 @@ class GameScene extends Phaser.Scene
 			duration: 700,
 			ease: 'Sine.easeOut',
 			onComplete: function () {
-			    leftBubble.setGravityY(800);
-			    rightBubble.setGravityY(800);
+				if (typeof leftBubble !== 'undefined')
+			    	leftBubble.setGravityY(800);
+			    if (typeof rightBubble !== 'undefined')
+			    	rightBubble.setGravityY(800);
 			}
 		});
 	}
