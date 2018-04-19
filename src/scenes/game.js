@@ -12,9 +12,9 @@ class GameScene extends Phaser.Scene
 
 	preload()
 	{
-	    this.load.image('bullet', 'assets/bullet.png');
-	    this.load.image('bubble', 'assets/bubble.png');
-	    this.load.image('player', 'assets/player.png');
+		this.load.image('bullet', 'assets/bullet.png');
+		this.load.image('bubble', 'assets/bubble.png');
+		this.load.image('player', 'assets/player.png');
 	}
 	
 	create()
@@ -39,15 +39,16 @@ class GameScene extends Phaser.Scene
 			}
 		});
 		this.bubbles.children.iterate(function (child) {
-		    child.setCollideWorldBounds(true);
-		    child.setGravityY(800);
-		    child.setBounce(1);
-		    child.setVelocityX(110);
-		    child.setAngularDrag(0);
-		    child.setDrag(0, -5.8);
-		    child.setFriction(0, 0);
-		    child.setMass(0);
-		    child.maxY = 100;
+			child.setCollideWorldBounds(true);
+			child.setGravityY(800);
+			child.setBounce(1);
+			child.setVelocityX(110);
+			child.setAngularDrag(0);
+			child.setDrag(0, -5.8);
+			child.setFriction(0, 0);
+			child.setMass(0);
+			child.maxY = 100;
+			child.sizeModifier = 1;
 		});
 
 		this.player = this.physics.add.sprite(width / 2, height - 50, 'player');
@@ -87,14 +88,17 @@ class GameScene extends Phaser.Scene
 		let rightBubble = this.bubbles.create(bubble.x, bubble.y, 'bubble');
 		leftBubble.depth = rightBubble.depth = bubble.depth + 1 || 0;
 		leftBubble.maxY = rightBubble.maxY = bubble.maxY + 100;
+		leftBubble.sizeModifier = rightBubble.sizeModifier = bubble.sizeModifier - 0.2;
 
-	    leftBubble.setVelocityX(-110);
-	    leftBubble.setCollideWorldBounds(true);
-	    leftBubble.setBounce(1);
+		leftBubble.setVelocityX(-110);
+		leftBubble.setCollideWorldBounds(true);
+		leftBubble.setBounce(1);
+		leftBubble.setScale(leftBubble.sizeModifier);
 
-	    rightBubble.setVelocityX(110);
-	    rightBubble.setCollideWorldBounds(true);
-	    rightBubble.setBounce(1);
+		rightBubble.setVelocityX(110);
+		rightBubble.setCollideWorldBounds(true);
+		rightBubble.setBounce(1);
+		rightBubble.setScale(rightBubble.sizeModifier);
 
 		this.tweens.add({
 			targets: [ leftBubble, rightBubble ],
@@ -102,15 +106,14 @@ class GameScene extends Phaser.Scene
 			duration: 700,
 			ease: 'Sine.easeOut',
 			onComplete: function () {
-				if (typeof leftBubble !== 'undefined')
-			    	leftBubble.setGravityY(800);
-			    if (typeof rightBubble !== 'undefined')
-			    	rightBubble.setGravityY(800);
+			if (typeof leftBubble !== 'undefined')
+				leftBubble.setGravityY(800);
+			if (typeof rightBubble !== 'undefined')
+				rightBubble.setGravityY(800);
 			}
 		});
 	}
 }
-
 
 function shoot() {
 	let that = this;
@@ -128,6 +131,5 @@ function shoot() {
 		}
 	});
 }
-
 
 export default GameScene;
