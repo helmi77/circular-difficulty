@@ -81,6 +81,9 @@ class GameScene extends Phaser.Scene
 
 	bubbleHit(bullet, bubble)
 	{
+		if (this.player.isAlive !== undefined && !this.player.isAlive)
+			return;
+
 	    bubble.destroy();
 		bullet.destroy();
 		this.player.shooting = false;
@@ -129,6 +132,12 @@ class GameScene extends Phaser.Scene
 
 	gameOver() 
 	{
+		this.player.setVelocityX(0);
+		this.bulletTween.stop();
+		this.bubbles.children.iterate(function (child) {
+			child.setGravityY(0);
+			child.setVelocity(0);
+		});
 		this.cameras.main.fade(250);
 		this.time.delayedCall(250, function() {
 			this.scene.restart();
