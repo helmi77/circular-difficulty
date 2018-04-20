@@ -54,11 +54,18 @@ class GameScene extends Phaser.Scene
 		this.player = this.physics.add.sprite(width / 2, height - 50, 'player');
 		this.player.setCollideWorldBounds(true);
 		this.player.setGravityY(800);
+		this.player.shooting = false;
+
+		this.physics.add.overlap(this.player, this.bubbles, this.playerHit.bind(this));
+		console.log(this.player);
 	}
 
 	update()
 	{
-		if (!this.shooting && Phaser.Input.Keyboard.JustDown(this.keys.shoot)) {
+		if (this.player.isAlive !== undefined && !this.player.isAlive)
+			return;
+
+		if (!this.player.shooting && Phaser.Input.Keyboard.JustDown(this.keys.shoot)) {
 			shoot.call(this);
 			this.physics.add.overlap(this.bullet, this.bubbles, this.bubbleHit.bind(this));
 		}
@@ -76,7 +83,7 @@ class GameScene extends Phaser.Scene
 	{
 	    bubble.destroy();
 		bullet.destroy();
-		this.shooting = false;
+		this.player.shooting = false;
 		if (typeof this.bulletTween !== 'undefined') {
 			this.bulletTween.stop();
 		}
@@ -106,12 +113,30 @@ class GameScene extends Phaser.Scene
 			duration: 700,
 			ease: 'Sine.easeOut',
 			onComplete: function () {
-			if (typeof leftBubble !== 'undefined')
-				leftBubble.setGravityY(800);
-			if (typeof rightBubble !== 'undefined')
-				rightBubble.setGravityY(800);
-			}
+				if (leftBubble !== undefined && leftBubble.body !== undefined)
+					leftBubble.setGravityY(800);
+				if (rightBubble !== undefined && rightBubble.body !== undefined)
+					rightBubble.setGravityY(800);
+				}
 		});
+	}
+
+	playerHit(player, bubble)
+	{
+		player.isAlive = false;
+		this.gameOver();
+	}
+
+	gameOver() 
+	{
+		this.cameras.main.fade(250);
+		this.time.delayedCall(250, function() {
+			this.scene.restart();
+			this.cameras.main.fadeFrom(250, function (camera, progress) {
+				if (progress === 1)
+					cameras.resetFX();
+			});
+		}, [], this);
 	}
 }
 
@@ -119,7 +144,7 @@ function shoot() {
 	let that = this;
 	let height = this.sys.game.config.height;
 	let bullet = this.bullet = this.physics.add.sprite(this.player.x, height, 'bullet');
-	this.shooting = true;
+	this.player.shooting = true;
 	this.bulletTween = this.tweens.add({
 		targets: this.bullet,
 		scaleY: height,
@@ -127,7 +152,7 @@ function shoot() {
 		ease: 'Linear',
 		onComplete: function () {
 			bullet.destroy();
-			that.shooting = false;
+			that.player.shooting = false;
 		}
 	});
 }
