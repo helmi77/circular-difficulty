@@ -8,9 +8,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
 	{
 		super(scene, x, y, Player.KEY);
 
-        scene.sys.displayList.add(this);
-        scene.sys.updateList.add(this);
-        scene.physics.add.existing(this);
+		scene.sys.displayList.add(this);
+		scene.sys.updateList.add(this);
+		scene.physics.add.existing(this);
 
 		this.setCollideWorldBounds(true);
 		this.setGravityY(800);
