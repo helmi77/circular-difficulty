@@ -5,7 +5,8 @@ export default class extends Phaser.Physics.Arcade.Group
 	constructor(scene)
 	{
 		super(scene.physics.world, scene);
-		this.scene = scene;
+
+		scene.physics.add.existing(this);
 	}
 
 	createFromParent(parent)
@@ -22,7 +23,7 @@ export default class extends Phaser.Physics.Arcade.Group
 	createMultiple(config)
 	{
 		super.createMultiple(config);
-		this.children.iterate(function (child) {
+		this.children.iterate(child => {
 			child.setCollideWorldBounds(true);
 			child.setGravityY(800);
 			child.setBounce(1);
@@ -49,7 +50,7 @@ export default class extends Phaser.Physics.Arcade.Group
 			y: leftBubble.y - 150,
 			duration: 700,
 			ease: 'Sine.easeOut',
-			onComplete: function () {
+			onComplete: () => {
 				if (leftBubble !== undefined && leftBubble.body !== undefined)
 					leftBubble.setGravityY(800);
 				if (rightBubble !== undefined && rightBubble.body !== undefined)
@@ -60,7 +61,7 @@ export default class extends Phaser.Physics.Arcade.Group
 
 	stop()
 	{
-		this.children.iterate(function (child) {
+		this.children.iterate(child => {
 			child.setGravityY(0);
 			child.setVelocity(0);
 		});
