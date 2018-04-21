@@ -1,19 +1,16 @@
-class Bubbles
+export default class extends Phaser.Physics.Arcade.Group
 {
+	static get KEY() { return "bubble"; }
+
 	constructor(scene)
 	{
-		this.key = 'bubble';
+		super(scene.physics.world, scene);
 		this.scene = scene;
 	}
 
-	preload()
+	createFromParent(parent)
 	{
-		this.scene.load.image(this.key, 'assets/bubble.png');
-	}
-
-	add(parent)
-	{
-		let bubble = this.group.create(parent.x, parent.y, this.key);
+		let bubble = this.create(parent.x, parent.y, this.constructor.KEY);
 		bubble.depth = parent.depth + 1 || 0;
 		bubble.maxY = parent.maxY + 100;
 		bubble.sizeModifier = parent.sizeModifier - 0.2;
@@ -22,11 +19,10 @@ class Bubbles
 		bubble.setCollideWorldBounds(true);
 		return bubble;
 	}
-	addMultiple(config)
+	createMultiple(config)
 	{
-		config['key'] = this.key;
-		this.group = this.scene.physics.add.group(config);
-		this.group.children.iterate(function (child) {
+		super.createMultiple(config);
+		this.children.iterate(function (child) {
 			child.setCollideWorldBounds(true);
 			child.setGravityY(800);
 			child.setBounce(1);
@@ -42,8 +38,8 @@ class Bubbles
 		if (bubble.depth !== undefined && bubble.depth >= 2) 
 			return;
 
-		let leftBubble = this.add(bubble);
-		let rightBubble = this.add(bubble);
+		let leftBubble = this.createFromParent(bubble);
+		let rightBubble = this.createFromParent(bubble);
 
 		leftBubble.setVelocityX(-110);
 		rightBubble.setVelocityX(110);		
@@ -64,11 +60,9 @@ class Bubbles
 
 	stop()
 	{
-		this.group.children.iterate(function (child) {
+		this.children.iterate(function (child) {
 			child.setGravityY(0);
 			child.setVelocity(0);
 		});
 	}
 }
-
-export default Bubbles;

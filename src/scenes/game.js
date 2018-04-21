@@ -1,4 +1,5 @@
-import Bubbles from '../bubbles';
+import Bubbles from '../lib/bubbles';
+import Player from '../lib/player';
 
 class GameScene extends Phaser.Scene 
 {
@@ -7,7 +8,6 @@ class GameScene extends Phaser.Scene
 		super({
 			key: 'Game',
 		});
-		this.bubbles = new Bubbles(this);
 		this.config = {
 			playerSpeed: 125,
 		};
@@ -15,13 +15,16 @@ class GameScene extends Phaser.Scene
 
 	preload()
 	{
-		this.bubbles.preload();
-		this.load.image('bullet', 'assets/bullet.png');
 		this.load.image('player', 'assets/player.png');
+		this.load.image(Bubbles.KEY, 'assets/bubble.png');
+		this.load.image('bullet', 'assets/bullet.png');
 	}
 	
 	create()
-	{		
+	{
+		this.bubbles = new Bubbles(this);
+		this.physics.add.existing(this.bubbles);
+
 		let height = this.sys.game.config.height;
 		let width = this.sys.game.config.width;
 
@@ -31,7 +34,8 @@ class GameScene extends Phaser.Scene
 			'shoot': 87,
 		});
 
-		this.bubbles.addMultiple({
+		this.bubbles.createMultiple({
+			key: Bubbles.KEY,
 			repeat: 2,
 			setXY: {
 				x: 100,
@@ -39,14 +43,14 @@ class GameScene extends Phaser.Scene
 				stepX: 45*4,
 				stepY: 0
 			}
-		});		
+		});
 
 		this.player = this.physics.add.sprite(width / 2, height - 50, 'player');
 		this.player.setCollideWorldBounds(true);
 		this.player.setGravityY(800);
 		this.player.shooting = false;
 
-		this.physics.add.overlap(this.player, this.bubbles.group, this.playerHit.bind(this));
+		this.physics.add.overlap(this.player, this.bubbles, this.playerHit.bind(this));
 	}
 
 	update()
@@ -56,7 +60,7 @@ class GameScene extends Phaser.Scene
 
 		if (!this.player.shooting && Phaser.Input.Keyboard.JustDown(this.keys.shoot)) {
 			shoot.call(this);
-			this.physics.add.overlap(this.bullet, this.bubbles.group, this.bubbleHit.bind(this));
+			this.physics.add.overlap(this.bullet, this.bubbles, this.bubbleHit.bind(this));
 		}
 
 		if (this.keys.left.isDown) {
