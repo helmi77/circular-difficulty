@@ -4,7 +4,7 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite
 
 	constructor(scene, player)
 	{
-		super(scene, player.x, scene.sys.game.config.height, Bullet.KEY);
+		super(scene, player.x, player.y + 20, Bullet.KEY);
 
 		scene.sys.displayList.add(this);
 		scene.sys.updateList.add(this);
