@@ -37,7 +37,7 @@ class GameScene extends Phaser.Scene
 		this.floor = this.physics.add.staticSprite(0, 550, 'bullet');
 		this.floor.setOrigin(0).setScale(800, 20).refreshBody();
 
-		this.ceiling = this.physics.add.staticSprite(0, 10, 'bullet');
+		this.ceiling = this.physics.add.staticSprite(0, 0, 'bullet');
 		this.ceiling.setOrigin(0).setScale(800, 20).refreshBody();
 
 		this.physics.add.collider(this.bubbles, this.ceiling, (_, bubble) => this.bubbles.hitCeiling(bubble));

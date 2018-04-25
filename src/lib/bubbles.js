@@ -2,6 +2,13 @@ export default class extends Phaser.Physics.Arcade.Group
 {
 	static get KEY() { return "bubble"; }
 
+	static get COLORS()
+	{
+		return [
+			0x90244e, 0x439c2d, 0x2d639c
+		];
+	}
+
 	constructor(scene)
 	{
 		super(scene.physics.world, scene);
@@ -13,9 +20,10 @@ export default class extends Phaser.Physics.Arcade.Group
 	{
 		let bubble = this.create(parent.x, parent.y, this.constructor.KEY);
 		bubble.parent = parent;
+		bubble.maxY = parent.maxY + 150;
 		bubble.depth = parent.depth + 1 || 0;
-		bubble.maxY = parent.maxY + 100;
-		bubble.sizeModifier = parent.sizeModifier - 0.2;
+		bubble.sizeModifier = parent.sizeModifier - 0.35;
+		bubble.setTint(this.constructor.COLORS[bubble.depth]);
 		bubble.setScale(bubble.sizeModifier);
 		bubble.setCollideWorldBounds(true);
 		bubble.setBounceX(1);
@@ -25,12 +33,13 @@ export default class extends Phaser.Physics.Arcade.Group
 	{
 		super.createMultiple(config);
 		this.children.iterate(child => {
+			child.maxY = 150;
+			child.sizeModifier = 1;
 			child.setCollideWorldBounds(true);
 			child.setGravityY(800);
-			child.setBounce(1);
+			child.setBounceX(1);
 			child.setVelocityX(110);
-			child.maxY = 100;
-			child.sizeModifier = 1;
+			child.setTint(this.constructor.COLORS[0]);
 		});
 	}
 
@@ -66,28 +75,21 @@ export default class extends Phaser.Physics.Arcade.Group
 	}
 	hitFloor(bubble)
 	{
-		if (bubble.parent === undefined)
-			return;
-
 		// TODO: Calculate duration based on diff between current Y and target Y
-		if (bubble.hadFirstBounce === undefined || !bubble.hadFirstBounce) {
-			console.log("bounce");
-			bubble.setGravityY(0);
-			bubble.setBounceY(0);
-			bubble.hadFirstBounce = true;
-			this.scene.tweens.add({
-				targets: bubble,
-				y: bubble.maxY,
-				duration: 700,
-				ease: 'Sine.easeOut',
-				onComplete: () => {
-					if (bubble !== undefined && bubble.body !== undefined) {
-						bubble.setBounceY(1);
-						bubble.setGravityY(800);
-					}
+		bubble.setGravityY(0);
+		bubble.setBounceY(0);
+		bubble.hadFirstBounce = true;
+		this.scene.tweens.add({
+			targets: bubble,
+			y: bubble.maxY,
+			duration: 1000 - bubble.maxY,
+			ease: 'Sine.easeOut',
+			onComplete: () => {
+				if (bubble !== undefined && bubble.body !== undefined) {
+					bubble.setGravityY(800);
 				}
-			})
-		}
+			}
+		})
 	}
 
 	stop()
