@@ -21,7 +21,7 @@ class GameScene extends Phaser.Scene
 		let height = this.sys.game.config.height;
 		let width = this.sys.game.config.width;
 
-		this.player = new Player(this, width / 2, height - 50);
+		this.player = new Player(this, width / 2, height - 100);
 		this.bubbles = new Bubbles(this);
 		this.bubbles.createMultiple({
 			key: Bubbles.KEY,
@@ -34,7 +34,17 @@ class GameScene extends Phaser.Scene
 			}
 		});
 
-		this.physics.add.overlap(this.player, this.bubbles, this.player.hit.bind(this));
+		this.floor = this.physics.add.staticSprite(0, 550, 'bullet');
+		this.floor.setOrigin(0).setScale(800, 20).refreshBody();
+
+		this.ceiling = this.physics.add.staticSprite(0, 10, 'bullet');
+		this.ceiling.setOrigin(0).setScale(800, 20).refreshBody();
+
+		this.physics.add.collider(this.bubbles, this.ceiling, (_, bubble) => this.bubbles.hitCeiling(bubble));
+		this.physics.add.collider(this.bubbles, this.floor, (_, bubble) => this.bubbles.hitFloor(bubble));
+		this.physics.add.collider(this.player, this.floor);
+
+		//this.physics.add.overlap(this.player, this.bubbles, this.player.hit.bind(this));
 
 		this.keys = this.input.keyboard.addKeys({
 			'left': 65,

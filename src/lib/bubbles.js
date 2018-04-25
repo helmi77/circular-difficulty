@@ -12,12 +12,13 @@ export default class extends Phaser.Physics.Arcade.Group
 	createFromParent(parent)
 	{
 		let bubble = this.create(parent.x, parent.y, this.constructor.KEY);
+		bubble.parent = parent;
 		bubble.depth = parent.depth + 1 || 0;
 		bubble.maxY = parent.maxY + 100;
 		bubble.sizeModifier = parent.sizeModifier - 0.2;
 		bubble.setScale(bubble.sizeModifier);		
-		bubble.setBounce(1);
 		bubble.setCollideWorldBounds(true);
+		bubble.setBounceX(1);
 		return bubble;
 	}
 	createMultiple(config)
@@ -57,6 +58,36 @@ export default class extends Phaser.Physics.Arcade.Group
 					rightBubble.setGravityY(800);
 				}
 		});
+	}
+
+	hitCeiling(bubble)
+	{
+		bubble.destroy();
+	}
+	hitFloor(bubble)
+	{
+		if (bubble.parent === undefined)
+			return;
+
+		// TODO: Calculate duration based on diff between current Y and target Y
+		if (bubble.hadFirstBounce === undefined || !bubble.hadFirstBounce) {
+			console.log("bounce");
+			bubble.setGravityY(0);
+			bubble.setBounceY(0);
+			bubble.hadFirstBounce = true;
+			this.scene.tweens.add({
+				targets: bubble,
+				y: bubble.maxY,
+				duration: 700,
+				ease: 'Sine.easeOut',
+				onComplete: () => {
+					if (bubble !== undefined) {
+						bubble.setBounceY(1);
+						bubble.setGravityY(800);
+					}
+				}
+			})
+		}
 	}
 
 	stop()
