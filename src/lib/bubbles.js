@@ -16,7 +16,7 @@ export default class extends Phaser.Physics.Arcade.Group
 		bubble.depth = parent.depth + 1 || 0;
 		bubble.maxY = parent.maxY + 100;
 		bubble.sizeModifier = parent.sizeModifier - 0.2;
-		bubble.setScale(bubble.sizeModifier);		
+		bubble.setScale(bubble.sizeModifier);
 		bubble.setCollideWorldBounds(true);
 		bubble.setBounceX(1);
 		return bubble;
@@ -81,7 +81,7 @@ export default class extends Phaser.Physics.Arcade.Group
 				duration: 700,
 				ease: 'Sine.easeOut',
 				onComplete: () => {
-					if (bubble !== undefined) {
+					if (bubble !== undefined && bubble.body !== undefined) {
 						bubble.setBounceY(1);
 						bubble.setGravityY(800);
 					}

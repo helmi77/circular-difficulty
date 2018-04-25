@@ -28,7 +28,7 @@ class GameScene extends Phaser.Scene
 			repeat: 2,
 			setXY: {
 				x: 100,
-				y: 100,
+				y: 200,
 				stepX: 45*4,
 				stepY: 0
 			}
