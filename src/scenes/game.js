@@ -44,7 +44,7 @@ class GameScene extends Phaser.Scene
 		this.physics.add.collider(this.bubbles, this.floor, (_, bubble) => this.bubbles.hitFloor(bubble));
 		this.physics.add.collider(this.player, this.floor);
 
-		//this.physics.add.overlap(this.player, this.bubbles, this.player.hit.bind(this));
+		this.physics.add.overlap(this.player, this.bubbles, this.player.hit.bind(this));
 
 		this.keys = this.input.keyboard.addKeys({
 			'left': 65,
