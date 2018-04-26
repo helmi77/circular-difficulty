@@ -36,7 +36,7 @@ export default class extends Phaser.Physics.Arcade.Group
 			child.maxY = 150;
 			child.sizeModifier = 1;
 			child.setCollideWorldBounds(true);
-			child.setGravityY(800);
+			child.setGravityY(600);
 			child.setBounceX(1);
 			child.setVelocityX(110);
 			child.setTint(this.constructor.COLORS[0]);
@@ -55,6 +55,7 @@ export default class extends Phaser.Physics.Arcade.Group
 		leftBubble.setVelocityX(-110);
 		rightBubble.setVelocityX(110);		
 
+		// TODO: Larger bubbles fly lower
 		this.scene.tweens.add({
 			targets: [ leftBubble, rightBubble ],
 			y: leftBubble.y - 150,
@@ -82,7 +83,7 @@ export default class extends Phaser.Physics.Arcade.Group
 		this.scene.tweens.add({
 			targets: bubble,
 			y: bubble.maxY,
-			duration: 1000 - bubble.maxY,
+			duration: 1100 - bubble.maxY,
 			ease: 'Sine.easeOut',
 			onComplete: () => {
 				if (bubble !== undefined && bubble.body !== undefined) {

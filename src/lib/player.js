@@ -24,11 +24,21 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
 
 	update()
 	{
-		if (!this.shooting && Phaser.Input.Keyboard.JustDown(this.scene.keys.shoot)) {
+		if (!this.shooting && this.scene.keys.shoot.isDown) {
 			this.shoot();
+			this.canMove = false;
+			this.setVelocityX(0);
+			this.scene.time.delayedCall(150, () => this.canMove = true);
 			this.scene.physics.add.overlap(this.bullet, this.scene.bubbles, this.bubbleHit.bind(this));
 		}
 
+		if (this.canMove === undefined || this.canMove) {
+			this.handleMovement();
+		}
+	}
+
+	handleMovement()
+	{ 
 		if (this.scene.keys.left.isDown) {
 			this.setVelocityX(-1 * 125);
 		} else if (this.scene.keys.right.isDown) {
