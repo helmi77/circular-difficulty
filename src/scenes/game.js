@@ -1,19 +1,20 @@
-import Bullet from '../lib/bullet';
-import Bubbles from '../lib/bubbles';
-import Player from '../lib/player';
+import Phaser from "phaser";
+import Bullet from "../lib/bullet";
+import Bubbles from "../lib/bubbles";
+import Player from "../lib/player";
 
 class GameScene extends Phaser.Scene 
 {
 	constructor() 
 	{
-		super('Game');
+		super("Game");
 	}
 
 	preload()
 	{
-		this.load.image(Player.KEY, 'assets/player.png');
-		this.load.image(Bubbles.KEY, 'assets/bubble.png');
-		this.load.image(Bullet.KEY, 'assets/bullet.png');
+		this.load.image(Player.KEY, "assets/player.png");
+		this.load.image(Bubbles.KEY, "assets/bubble.png");
+		this.load.image(Bullet.KEY, "assets/bullet.png");
 	}
 	
 	create()
@@ -34,10 +35,10 @@ class GameScene extends Phaser.Scene
 			}
 		});
 
-		this.floor = this.physics.add.staticSprite(0, 550, 'bullet');
+		this.floor = this.physics.add.staticSprite(0, 550, "bullet");
 		this.floor.setOrigin(0).setScale(800, 20).refreshBody();
 
-		this.ceiling = this.physics.add.staticSprite(0, 0, 'bullet');
+		this.ceiling = this.physics.add.staticSprite(0, 0, "bullet");
 		this.ceiling.setOrigin(0).setScale(800, 20).refreshBody();
 
 		this.physics.add.collider(this.bubbles, this.ceiling, (_, bubble) => this.bubbles.hitCeiling(bubble));
@@ -47,9 +48,9 @@ class GameScene extends Phaser.Scene
 		this.physics.add.overlap(this.player, this.bubbles, this.player.hit.bind(this));
 
 		this.keys = this.input.keyboard.addKeys({
-			'left': 65,
-			'right': 68,
-			'shoot': 87,
+			"left": 65,
+			"right": 68,
+			"shoot": 87,
 		});
 	}
 
@@ -72,7 +73,7 @@ class GameScene extends Phaser.Scene
 			this.scene.restart();
 			this.cameras.main.fadeFrom(250, (camera, progress) => {
 				if (progress === 1)
-					cameras.resetFX();
+					camera.resetFX();
 			});
 		}, [], this);
 	}

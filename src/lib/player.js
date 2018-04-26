@@ -1,4 +1,5 @@
-import Bullet from '../lib/bullet';
+import Phaser from "phaser";
+import Bullet from "../lib/bullet";
 
 export default class Player extends Phaser.Physics.Arcade.Sprite
 {
@@ -48,7 +49,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
 		}
 	}
 
-	hit(player, bubble)
+	hit(player)
 	{
 		player.alive = false;
 		this.gameOver();

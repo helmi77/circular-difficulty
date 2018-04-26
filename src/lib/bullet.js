@@ -1,3 +1,5 @@
+import Phaser from "phaser";
+
 export default class Bullet extends Phaser.Physics.Arcade.Sprite
 {
 	static get KEY() { return "bullet"; }
@@ -15,7 +17,7 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite
 			targets: this,
 			scaleY: scene.sys.game.config.height,
 			duration: 2000,
-			ease: 'Linear',
+			ease: "Linear",
 			onComplete: () => {
 				bullet.destroy();
 				player.shooting = false;

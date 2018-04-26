@@ -1,3 +1,5 @@
+import Phaser from "phaser";
+
 export default class extends Phaser.Physics.Arcade.Group
 {
 	static get KEY() { return "bubble"; }
@@ -45,7 +47,7 @@ export default class extends Phaser.Physics.Arcade.Group
 
 	split(bubble)
 	{
-	    bubble.destroy();
+		bubble.destroy();
 		if (bubble.depth !== undefined && bubble.depth >= 2) 
 			return;
 
@@ -60,13 +62,13 @@ export default class extends Phaser.Physics.Arcade.Group
 			targets: [ leftBubble, rightBubble ],
 			y: leftBubble.y - 150,
 			duration: 700,
-			ease: 'Sine.easeOut',
+			ease: "Sine.easeOut",
 			onComplete: () => {
 				if (leftBubble !== undefined && leftBubble.body !== undefined)
 					leftBubble.setGravityY(800);
 				if (rightBubble !== undefined && rightBubble.body !== undefined)
 					rightBubble.setGravityY(800);
-				}
+			}
 		});
 	}
 
@@ -84,13 +86,13 @@ export default class extends Phaser.Physics.Arcade.Group
 			targets: bubble,
 			y: bubble.maxY,
 			duration: 1100 - bubble.maxY,
-			ease: 'Sine.easeOut',
+			ease: "Sine.easeOut",
 			onComplete: () => {
 				if (bubble !== undefined && bubble.body !== undefined) {
 					bubble.setGravityY(800);
 				}
 			}
-		})
+		});
 	}
 
 	stop()
