@@ -35,7 +35,7 @@ class GameScene extends Phaser.Scene
 			}
 		});
 
-		this.floor = this.physics.add.staticSprite(0, 550, "bullet");
+		this.floor = this.physics.add.staticSprite(0, 580, "bullet");
 		this.floor.setOrigin(0).setScale(800, 20).refreshBody();
 
 		this.ceiling = this.physics.add.staticSprite(0, 0, "bullet");

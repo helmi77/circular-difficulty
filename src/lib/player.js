@@ -27,9 +27,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
 	{
 		if (!this.shooting && this.scene.keys.shoot.isDown) {
 			this.shoot();
-			this.canMove = false;
 			this.setVelocityX(0);
-			this.scene.time.delayedCall(150, () => this.canMove = true);
+			this.canMove = false;
+			this.scene.time.delayedCall(200, () => this.canMove = true);
 			this.scene.physics.add.overlap(this.bullet, this.scene.bubbles, this.bubbleHit.bind(this));
 		}
 

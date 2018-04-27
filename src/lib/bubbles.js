@@ -57,11 +57,10 @@ export default class extends Phaser.Physics.Arcade.Group
 		leftBubble.setVelocityX(-110);
 		rightBubble.setVelocityX(110);		
 
-		// TODO: Larger bubbles fly lower
 		this.scene.tweens.add({
 			targets: [ leftBubble, rightBubble ],
-			y: leftBubble.y - 150,
-			duration: 700,
+			y: leftBubble.y - 150 * leftBubble.depth / 2,
+			duration: 500 - 100 * (1 - leftBubble.depth),
 			ease: "Sine.easeOut",
 			onComplete: () => {
 				if (leftBubble !== undefined && leftBubble.body !== undefined)
